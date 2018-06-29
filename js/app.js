@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
-var content = document.getElementById('content');
-var title = document.getElementById('title');
-var form = document.getElementById('collapseAdd');
+var content  = document.getElementById('content');
+var title    = document.getElementById('title');
+var form 	 = document.getElementById('collapseAdd');
+var collapse = document.getElementById('collapseGroup');
 
 var Titulo = React.createClass({
 	render: function(){
@@ -54,10 +55,6 @@ var Input = React.createClass({
 });
 
 var FormCollapse = React.createClass({
-	alert: function(event) {
-		event.preventDefault();
-		alert('Estas Dando Click');
-	},
 	render: function(){
 		return  React.DOM.div({
 					className:'row',
@@ -69,7 +66,8 @@ var FormCollapse = React.createClass({
 									type:'text',
 									className:'form-control',
 									id:'name-collapse',
-									placeholder:'Escribe el titulo del collapse'
+									placeholder:'Escribe el titulo del collapse',
+									ref:'collapseName'
 								}),
 							]
 						}),
@@ -79,12 +77,58 @@ var FormCollapse = React.createClass({
 								React.DOM.button({
 									className:'btn btn-primary',
 									children:'Enviar',
-									onClick:this.alert
+									onClick:this.generateCollapse
+								})
+							]
+						}),
+						React.renderComponent(Collapse({text:'Mi primer collapse', id:'collapse1'}),collapse)
+					]
+				})
+	}
+});
+
+
+var Collapse = React.createClass({
+	componentDidMount: function () {
+		$('.btncollapse').attr({
+			'data-toggle':'collapse',
+			'data-target':'#' + this.props.id,
+			'aria-expanded':'true',
+			'aria-controls':this.props.id
+		});
+	},
+	render: function(){
+		return React.DOM.div({
+			className:'card',
+			children:[
+				React.DOM.div({
+					className:'card-header',
+					id:'collapseOne',
+					children:[
+						React.DOM.h5({
+							className:'mb-0',
+							children:[
+								React.DOM.button({
+									className:'btn btn-link btncollapse',
+									type:'button',
+									children:'Collapse 1'
 								})
 							]
 						})
 					]
+				}),
+				React.DOM.div({
+					id:this.props.id,
+					className:'collapse show',
+					children:[
+						React.DOM.div({
+							className:'card-body',
+							children:this.props.text
+						})
+					]
 				})
+			]
+		})
 	}
 })
 
