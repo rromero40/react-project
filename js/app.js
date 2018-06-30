@@ -57,13 +57,22 @@ var Input = React.createClass({
 var FormCollapse = React.createClass({
 	getInitialState: function () {
 		return {
-			elemsCollapse:['collapse1','collapse2']
+			elemsCollapse:[
+			{
+				'title':'collapse1',
+				'text':'Esto es un collapse'
+			},
+			{
+				'title':'collapse2',
+				'text':'Esto es un collapse'
+			}
+			]
 		};
 	},
 	addElement: function (event) {
 		event.preventDefault();
 		var elementsAct = this.state.elemsCollapse;
-		elementsAct.push(this.refs.collapseName.state.value);
+		elementsAct.push({'title':this.refs.collapseName.state.value,'text':this.refs.collapseText.state.value});
 		this.setState({
 			elemsCollapse: elementsAct
 		},this.componentDidMount());
@@ -88,6 +97,18 @@ var FormCollapse = React.createClass({
 							]
 						}),
 						React.DOM.div({
+							className:'col-xl-4',
+							children:[
+								React.DOM.input({
+									type:'text',
+									className:'form-control',
+									id:'text-collapse',
+									placeholder:'Escribe el contenido',
+									ref:'collapseText'
+								}),
+							]
+						}),
+						React.DOM.div({
 							className:'col-xl-2 btnSend',
 							children:[
 								React.DOM.button({
@@ -106,11 +127,11 @@ var FormCollapse = React.createClass({
 var Collapse = React.createClass({
 	updateProperties: function(){
 		this.props.elements.map(function(item){
-			$('#item_' + item).attr({
+			$('#item_' + item.title).attr({
 				'data-toggle':'collapse',
-				'data-target':'#' + item,
+				'data-target':'#' + item.title,
 				'aria-expanded':'true',
-				'aria-controls':item
+				'aria-controls':item.title
 			});
 		})
 	},
@@ -133,21 +154,21 @@ var Collapse = React.createClass({
 							children:[
 								React.DOM.button({
 									className:'btn btn-link',
-									id:'item_' + item,
+									id:'item_' + item.title,
 									type:'button',
-									children:item
+									children:item.title
 								})
 							]
 						})
 					]
 				}),
 				React.DOM.div({
-					id:item,
+					id:item.title,
 					className:'collapse show',
 					children:[
 						React.DOM.div({
 							className:'card-body',
-							children:item
+							children:item.text
 						})
 					]
 				})
