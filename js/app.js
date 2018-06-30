@@ -2,7 +2,7 @@
 var content  = document.getElementById('content');
 var title    = document.getElementById('title');
 var form 	 = document.getElementById('collapseAdd');
-var collapse = document.getElementById('collapseGroup');
+var collapse = document.getElementById('collapseBox');
 
 var Titulo = React.createClass({
 	render: function(){
@@ -55,6 +55,22 @@ var Input = React.createClass({
 });
 
 var FormCollapse = React.createClass({
+	getInitialState: function () {
+		return {
+			elemsCollapse:['collapse1','collapse2']
+		};
+	},
+	addElement: function (event) {
+		event.preventDefault();
+		var elementsAct = this.state.elemsCollapse;
+		elementsAct.push(this.refs.collapseName.state.value);
+		this.setState({
+			elemsCollapse: elementsAct
+		},this.componentDidMount());
+	},
+	componentDidMount: function () {
+		React.renderComponent(Collapse({elements:this.state.elemsCollapse}),collapse);
+	},
 	render: function(){
 		return  React.DOM.div({
 					className:'row',
@@ -77,11 +93,10 @@ var FormCollapse = React.createClass({
 								React.DOM.button({
 									className:'btn btn-primary',
 									children:'Enviar',
-									onClick:this.generateCollapse
+									onClick:this.addElement
 								})
 							]
 						}),
-						React.renderComponent(Collapse({text:'Mi primer collapse', id:'collapse1'}),collapse)
 					]
 				})
 	}
@@ -89,15 +104,23 @@ var FormCollapse = React.createClass({
 
 
 var Collapse = React.createClass({
-	componentDidMount: function () {
-		$('.btncollapse').attr({
-			'data-toggle':'collapse',
-			'data-target':'#' + this.props.id,
-			'aria-expanded':'true',
-			'aria-controls':this.props.id
-		});
+	updateProperties: function(){
+		this.props.elements.map(function(item){
+			$('#item_' + item).attr({
+				'data-toggle':'collapse',
+				'data-target':'#' + item,
+				'aria-expanded':'true',
+				'aria-controls':item
+			});
+		})
 	},
-	render: function(){
+	componentDidMount: function () {
+		this.updateProperties();
+	},
+	componentDidUpdate: function () {
+		this.updateProperties();
+	},
+	generateCollapse: function(item){
 		return React.DOM.div({
 			className:'card',
 			children:[
@@ -109,30 +132,38 @@ var Collapse = React.createClass({
 							className:'mb-0',
 							children:[
 								React.DOM.button({
-									className:'btn btn-link btncollapse',
+									className:'btn btn-link',
+									id:'item_' + item,
 									type:'button',
-									children:'Collapse 1'
+									children:item
 								})
 							]
 						})
 					]
 				}),
 				React.DOM.div({
-					id:this.props.id,
+					id:item,
 					className:'collapse show',
 					children:[
 						React.DOM.div({
 							className:'card-body',
-							children:this.props.text
+							children:item
 						})
 					]
 				})
 			]
 		})
+	},
+	render: function(){
+		return React.DOM.div({
+					className:'accordion',
+					id:'collapseGroup',
+					children:this.props.elements.map(this.generateCollapse)
+			   })
 	}
 })
 
-React.renderComponent(<FormCollapse/>,form);
+React.renderComponent(FormCollapse(),form);
 
 
 //var content = document.getElementById('content');

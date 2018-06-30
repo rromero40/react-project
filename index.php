@@ -16,10 +16,8 @@
 					
 				</form>
 			</div>
-			<div class="col-xl-12">
-				<div class="accordion" id="collapseGroup">
-				  
-				</div>
+			<div class="col-xl-12" id="collapseBox">
+
 			</div>
 		</div>
 	</div>
